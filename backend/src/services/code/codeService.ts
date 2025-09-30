@@ -56,9 +56,22 @@ export async function generateCode(language: string): Promise<string | null> {
  * Gets the appropriate file extension for a programming language
  * 
  * @param {string} language - The programming language identifier
- * @returns {Promise<string>} The file extension for the language
+ * @returns {string} The file extension for the language
  */
-export async function getFileExtension(language: string): Promise<string> {
-  const languageInfo = await getLanguageById(language);
-  return languageInfo?.extension || 'txt';
+export function getFileExtension(language: string): string {
+  // Map of language IDs to file extensions
+  const extensionMap: Record<string, string> = {
+    javascript: 'js',
+    typescript: 'ts',
+    python: 'py',
+    java: 'java',
+    csharp: 'cs',
+    cpp: 'cpp',
+    php: 'php',
+    ruby: 'rb',
+    go: 'go',
+    rust: 'rs'
+  };
+  
+  return extensionMap[language] || 'txt';
 }

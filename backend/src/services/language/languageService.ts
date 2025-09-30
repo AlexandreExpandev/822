@@ -8,41 +8,4 @@ import { LanguageInfo } from '../../types/language';
  */
 export async function getLanguages(): Promise<LanguageInfo[]> {
   // In a real application, this might come from a database
-  // For this example, we'll use a static list
-  return [
-    { id: 'javascript', name: 'JavaScript', extension: 'js', displayName: 'JavaScript' },
-    { id: 'typescript', name: 'TypeScript', extension: 'ts', displayName: 'TypeScript' },
-    { id: 'python', name: 'Python', extension: 'py', displayName: 'Python' },
-    { id: 'java', name: 'Java', extension: 'java', displayName: 'Java' },
-    { id: 'csharp', name: 'C#', extension: 'cs', displayName: 'C#' },
-    { id: 'cpp', name: 'C++', extension: 'cpp', displayName: 'C++' },
-    { id: 'php', name: 'PHP', extension: 'php', displayName: 'PHP' },
-    { id: 'ruby', name: 'Ruby', extension: 'rb', displayName: 'Ruby' },
-    { id: 'go', name: 'Go', extension: 'go', displayName: 'Go' },
-    { id: 'rust', name: 'Rust', extension: 'rs', displayName: 'Rust' }
-  ];
-}
-
-/**
- * @summary
- * Checks if a language is supported by the system
- * 
- * @param {string} languageId - The language identifier to check
- * @returns {Promise<boolean>} True if the language is supported
- */
-export async function isLanguageSupported(languageId: string): Promise<boolean> {
-  const languages = await getLanguages();
-  return languages.some(lang => lang.id === languageId);
-}
-
-/**
- * @summary
- * Gets language information by its identifier
- * 
- * @param {string} languageId - The language identifier
- * @returns {Promise<LanguageInfo | undefined>} Language information or undefined if not found
- */
-export async function getLanguageById(languageId: string): Promise<LanguageInfo | undefined> {
-  const languages = await getLanguages();
-  return languages.find(lang => lang.id === languageId);
-}
+  // For this example, we'll use a static list\n  return [\n    { id: 'javascript', name: 'JavaScript', extension: 'js', displayName: 'JavaScript' },\n    { id: 'typescript', name: 'TypeScript', extension: 'ts', displayName: 'TypeScript' },\n    { id: 'python', name: 'Python', extension: 'py', displayName: 'Python' },\n    { id: 'java', name: 'Java', extension: 'java', displayName: 'Java' },\n    { id: 'csharp', name: 'C#', extension: 'cs', displayName: 'C#' },\n    { id: 'cpp', name: 'C++', extension: 'cpp', displayName: 'C++' },\n    { id: 'php', name: 'PHP', extension: 'php', displayName: 'PHP' },\n    { id: 'ruby', name: 'Ruby', extension: 'rb', displayName: 'Ruby' },\n    { id: 'go', name: 'Go', extension: 'go', displayName: 'Go' },\n    { id: 'rust', name: 'Rust', extension: 'rs', displayName: 'Rust' }\n  ];\n}\n\n/**\n * @summary\n * Checks if a language is supported by the system\n * \n * @param {string} languageId - The language identifier to check\n * @returns {Promise<boolean>} True if the language is supported\n */\nexport async function isLanguageSupported(languageId: string): Promise<boolean> {\n  const languages = await getLanguages();\n  return languages.some(lang => lang.id === languageId);\n}\n\n/**\n * @summary\n * Gets language information by its identifier\n * \n * @param {string} languageId - The language identifier\n * @returns {Promise<LanguageInfo | undefined>} Language information or undefined if not found\n */\nexport async function getLanguageById(languageId: string): Promise<LanguageInfo | undefined> {\n  const languages = await getLanguages();\n  return languages.find(lang => lang.id === languageId);\n}\n
