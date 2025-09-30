@@ -24,14 +24,16 @@ export async function getHandler(req: Request, res: Response, next: NextFunction
     const result = languageParamSchema.safeParse(req.params);
     
     if (!result.success) {
-      return res.status(400).json(errorResponse('Invalid language parameter'));
+      res.status(400).json(errorResponse('Invalid language parameter'));
+      return;
     }
     
     const { language } = result.data;
     const code = await generateCode(language);
     
     if (!code) {
-      return res.status(404).json(errorResponse(`Language '${language}' not supported`));
+      res.status(404).json(errorResponse(`Language '${language}' not supported`));
+      return;
     }
     
     res.json(successResponse({ language, code }));
@@ -56,14 +58,16 @@ export async function downloadHandler(req: Request, res: Response, next: NextFun
     const result = languageParamSchema.safeParse(req.params);
     
     if (!result.success) {
-      return res.status(400).json(errorResponse('Invalid language parameter'));
+      res.status(400).json(errorResponse('Invalid language parameter'));
+      return;
     }
     
     const { language } = result.data;
     const code = await generateCode(language);
     
     if (!code) {
-      return res.status(404).json(errorResponse(`Language '${language}' not supported`));
+      res.status(404).json(errorResponse(`Language '${language}' not supported`));
+      return;
     }
     
     const extension = getFileExtension(language);

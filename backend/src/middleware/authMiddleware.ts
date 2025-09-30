@@ -18,7 +18,7 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction):
   const token = authHeader && authHeader.split(' ')[1];
 
   if (!token) {
-    return res.status(401).json({
+    res.status(401).json({
       success: false,
       error: {
         message: 'Authentication required',
@@ -26,6 +26,7 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction):
       },
       timestamp: new Date().toISOString()
     });
+    return;
   }
 
   try {
@@ -37,7 +38,7 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction):
     
     next();
   } catch (error) {
-    return res.status(401).json({
+    res.status(401).json({
       success: false,
       error: {
         message: 'Invalid authentication token',
@@ -45,5 +46,6 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction):
       },
       timestamp: new Date().toISOString()
     });
+    return;
   }
 }
