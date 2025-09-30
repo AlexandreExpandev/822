@@ -18,7 +18,7 @@ export const ErrorFallback = ({ error, resetErrorBoundary }: FallbackProps) => {
       <pre className="w-full max-w-2xl whitespace-pre-wrap rounded-md bg-muted p-4 text-destructive-foreground">
         {error.message}
       </pre>
-      <Button onClick={resetErrorBoundary} variant="destructive">
+      <Button onClick={resetErrorBoundary}>
         Try again
       </Button>
     </div>

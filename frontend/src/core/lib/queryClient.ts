@@ -17,7 +17,7 @@ export const queryClient = new QueryClient({
         }
         return failureCount < 3; // Retry up to 3 times for other errors
       },
-      refetchOnWindowFocus: import.meta.env.PROD, // Only refetch on focus in production
+      refetchOnWindowFocus: process.env.NODE_ENV === 'production', // Only refetch on focus in production
     },
   },
 });
