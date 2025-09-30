@@ -1,6 +1,5 @@
 import { Button } from '@/core/components/Button';
 import { Download } from 'lucide-react';
-import { codeGeneratorService } from '../../services/codeGeneratorService';
 import { useGeneratedCode } from '../../hooks/useGeneratedCode';
 
 interface DownloadButtonProps {
@@ -30,9 +29,22 @@ export const DownloadButton = ({ language }: DownloadButtonProps) => {
     const a = document.createElement('a');
     a.href = url;
     
-    // Get the appropriate file extension from the service
-    const downloadUrl = codeGeneratorService.getDownloadUrl(language);
-    const filename = downloadUrl.split('/').pop() || 'hello-world.txt';
+    // Get the appropriate file extension based on language
+    const fileExtensions: Record<string, string> = {
+      javascript: 'js',
+      typescript: 'ts',
+      python: 'py',
+      java: 'java',
+      csharp: 'cs',
+      cpp: 'cpp',
+      php: 'php',
+      ruby: 'rb',
+      go: 'go',
+      rust: 'rs'
+    };
+    
+    const extension = fileExtensions[language] || 'txt';
+    const filename = `hello-world.${extension}`;
     
     a.download = filename;
     
