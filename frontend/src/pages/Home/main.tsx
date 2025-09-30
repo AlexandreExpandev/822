@@ -1,3 +1,6 @@
+import { useState } from 'react';
+import { LanguageSelector, CodeDisplay, DownloadButton } from '@/domain/codeGenerator/components';
+
 /**
  * @page HomePage
  * @summary The main landing page of the application where users can
@@ -7,6 +10,12 @@
  * @category public
  */
 export const HomePage = () => {
+  const [selectedLanguage, setSelectedLanguage] = useState<string | null>(null);
+
+  const handleLanguageSelect = (language: string) => {
+    setSelectedLanguage(language);
+  };
+
   return (
     <main className="container mx-auto flex flex-1 flex-col items-center justify-center p-4">
       <div className="w-full max-w-4xl space-y-8">
@@ -19,19 +28,20 @@ export const HomePage = () => {
           </p>
         </div>
 
-        {/* 
-          FEATURE IMPLEMENTATION AREA 
-          This is where the main interactive components will be placed.
-        */}
         <div className="rounded-lg border bg-card p-6 shadow-sm">
-          {/* 1. LanguageSelector component will go here */}
-          <div className="mb-4 h-10 w-full max-w-xs rounded-md bg-muted/50 animate-pulse" aria-label="Loading language selector..."></div>
+          {/* 1. Language Selector */}
+          <LanguageSelector 
+            onLanguageSelect={handleLanguageSelect} 
+            selectedLanguage={selectedLanguage} 
+          />
           
-          {/* 2. CodeDisplay component will go here */}
-          <div className="h-64 w-full rounded-md bg-muted/50 animate-pulse" aria-label="Loading code display..."></div>
+          {/* 2. Code Display */}
+          <div className="mt-6">
+            <CodeDisplay language={selectedLanguage} />
+          </div>
           
-          {/* 3. DownloadButton component will go here */}
-          <div className="mt-4 h-10 w-32 rounded-md bg-muted/50 animate-pulse" aria-label="Loading download button..."></div>
+          {/* 3. Download Button */}
+          <DownloadButton language={selectedLanguage} />
         </div>
       </div>
     </main>
