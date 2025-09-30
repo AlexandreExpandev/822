@@ -20,8 +20,7 @@ export async function generateCode(language: string): Promise<string | null> {
       return 'console.log("Hello, World!");';
       
     case 'typescript':
-      return 'const message: string = "Hello, World!";
-console.log(message);';
+      return 'const message: string = "Hello, World!";\nconsole.log(message);';
       
     case 'python':
       return 'print("Hello, World!")';
