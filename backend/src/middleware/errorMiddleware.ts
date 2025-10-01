@@ -1,58 +1,52 @@
 import { Request, Response, NextFunction } from 'express';
 import { logger } from '../utils/logger';
-import { ApiError } from '../utils/errors';
 
-/**
- * Global error handling middleware
- */
+export interface AppError extends Error {
+  statusCode?: number;
+  details?: unknown;
+}
+
 export const errorMiddleware = (
-  err: Error,
+  err: AppError,
   req: Request,
   res: Response,
   next: NextFunction
 ): void => {
+  const statusCode = err.statusCode || 500;
+  const message = err.message || 'Internal Server Error';
+
   // Log the error
-  logger.error('Error occurred:', {
-    error: err.message,
-    stack: err.stack,
+  logger.error(`${statusCode} - ${message}`, {
     path: req.path,
     method: req.method,
+    error: err.stack,
+    details: err.details,
   });
 
-  // Handle known API errors
-  if (err instanceof ApiError) {
-    res.status(err.statusCode).json({
-      success: false,
-      error: {
-        code: err.code,
-        message: err.message,
-      },
-      timestamp: new Date().toISOString(),
-    });
-    return;
-  }
-
-  // Handle validation errors
-  if (err.name === 'ValidationError' || err.name === 'ZodError') {
-    res.status(400).json({
-      success: false,
-      error: {
-        code: 'VALIDATION_ERROR',
-        message: 'Validation failed',
-        details: err.message,
-      },
-      timestamp: new Date().toISOString(),
-    });
-    return;
-  }
-
-  // Handle unknown errors
-  res.status(500).json({
+  // Send error response
+  res.status(statusCode).json({
     success: false,
     error: {
-      code: 'INTERNAL_SERVER_ERROR',
-      message: 'An unexpected error occurred',
+      message,
+      ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
+      ...(err.details && { details: err.details }),
     },
     timestamp: new Date().toISOString(),
   });
 };
+
+export class BadRequestError extends Error implements AppError {
+  statusCode = 400;
+  constructor(message: string, public details?: unknown) {
+    super(message);
+    this.name = 'BadRequestError';
+  }
+}
+
+export class NotFoundError extends Error implements AppError {
+  statusCode = 404;
+  constructor(message: string, public details?: unknown) {
+    super(message);
+    this.name = 'NotFoundError';
+  }
+}

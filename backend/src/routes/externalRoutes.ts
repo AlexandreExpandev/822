@@ -4,8 +4,10 @@ import * as codeController from '../api/external/public/code/controller';
 
 const router = Router();
 
-// Public routes for language selection and code generation
+// Public routes for language selection
 router.get('/public/languages', languageController.listHandler);
+
+// Public routes for code generation
 router.get('/public/code/:language', codeController.getHandler);
 router.get('/public/code/:language/download', codeController.downloadHandler);
 

@@ -1,11 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
-import { successResponse } from '../../../../utils/responses';
-import { ApiError } from '../../../../utils/errors';
+import { successResponse } from '../../../../utils/responseFormatter';
 import { languageService } from '../../../../services/language';
 
 /**
  * @summary
- * Lists all available programming languages
+ * Lists all available programming languages for Hello World code generation
  *
  * @function listHandler
  * @module language

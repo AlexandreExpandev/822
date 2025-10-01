@@ -1,1 +1,0 @@
-export { languageService } from './languageService';
