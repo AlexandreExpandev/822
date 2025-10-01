@@ -1,30 +1,15 @@
-/**
- * @summary
- * Application configuration settings loaded from environment variables
- * with sensible defaults for development environments.
- */
+import dotenv from 'dotenv';
+
+// Load environment variables
+dotenv.config();
+
 export const config = {
-  database: {
-    host: process.env.DB_HOST || 'localhost',
-    port: parseInt(process.env.DB_PORT || '1433'),
-    user: process.env.DB_USER || 'sa',
-    password: process.env.DB_PASSWORD || '',
-    database: process.env.DB_NAME || 'helloworld',
-    options: {
-      encrypt: process.env.DB_ENCRYPT === 'true',
-      trustServerCertificate: process.env.NODE_ENV === 'development',
-    },
+  server: {
+    port: parseInt(process.env.PORT || '3000', 10),
+    environment: process.env.NODE_ENV || 'development',
   },
-  api: {
-    port: parseInt(process.env.PORT || '3000'),
-    cors: {
-      origin: process.env.CORS_ORIGIN || '*',
-      credentials: true,
-    },
-  },
-  security: {
-    jwtSecret: (process.env.JWT_SECRET || 'hello-world-secret-key') as string,
-    jwtExpiration: (process.env.JWT_EXPIRATION || '24h') as string,
+  cors: {
+    origin: process.env.CORS_ORIGIN || '*',
   },
   logging: {
     level: process.env.LOG_LEVEL || 'info',

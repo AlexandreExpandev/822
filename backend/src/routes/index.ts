@@ -7,7 +7,7 @@ const router = Router();
 // External (public) routes
 router.use('/external', externalRoutes);
 
-// Internal (authenticated) routes
+// Internal routes
 router.use('/internal', internalRoutes);
 
 export default router;

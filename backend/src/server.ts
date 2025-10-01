@@ -1,49 +1,41 @@
 import express from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
-import compression from 'compression';
 import { config } from './config';
+import { logger } from './utils/logger';
 import { errorMiddleware } from './middleware/errorMiddleware';
 import { notFoundMiddleware } from './middleware/notFoundMiddleware';
 import routes from './routes';
 
+// Initialize express app
 const app = express();
 
-// Security middleware
-app.use(helmet());
-app.use(cors(config.api.cors));
-
-// Request processing middleware
-app.use(compression());
+// Apply middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.json({ status: 'healthy', timestamp: new Date().toISOString() });
-});
-
-// API Routes
+// Apply routes
 app.use('/api', routes);
 
-// 404 handler
-app.use(notFoundMiddleware);
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'healthy', timestamp: new Date().toISOString() });
+});
 
 // Error handling
+app.use(notFoundMiddleware);
 app.use(errorMiddleware);
 
-// Graceful shutdown
+// Start server
+const server = app.listen(config.server.port, () => {
+  logger.info(`Server running on port ${config.server.port} in ${config.server.environment} mode`);
+});
+
+// Handle graceful shutdown
 process.on('SIGTERM', () => {
-  console.log('SIGTERM received, closing server gracefully');
+  logger.info('SIGTERM received, shutting down gracefully');
   server.close(() => {
-    console.log('Server closed');
+    logger.info('Server closed');
     process.exit(0);
   });
 });
 
-// Server startup
-const server = app.listen(config.api.port, () => {
-  console.log(`Server running on port ${config.api.port} in ${process.env.NODE_ENV} mode`);
-});
-
-export default server;
+export default app;

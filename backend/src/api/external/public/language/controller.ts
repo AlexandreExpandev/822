@@ -1,22 +1,22 @@
 import { Request, Response, NextFunction } from 'express';
-import { getLanguages } from '../../../../services/language/languageService';
-import { successResponse, errorResponse } from '../../../../utils/response/responseUtils';
+import { successResponse } from '../../../../utils/responses';
+import { ApiError } from '../../../../utils/errors';
+import { languageService } from '../../../../services/language';
 
 /**
  * @summary
- * Retrieves the list of available programming languages
- * 
- * @function getHandler
- * @param {Request} req - Express request object
- * @param {Response} res - Express response object
- * @param {NextFunction} next - Express next function
- * @returns {Promise<void>}
+ * Lists all available programming languages
+ *
+ * @function listHandler
+ * @module language
+ *
+ * @returns {Array} List of available programming languages
  */
-export async function getHandler(req: Request, res: Response, next: NextFunction): Promise<void> {
+export async function listHandler(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const languages = await getLanguages();
+    const languages = await languageService.listLanguages();
     res.json(successResponse(languages));
-  } catch (error: any) {
+  } catch (error) {
     next(error);
   }
 }

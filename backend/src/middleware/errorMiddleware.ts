@@ -1,36 +1,58 @@
 import { Request, Response, NextFunction } from 'express';
-import { logger } from '../utils/logger/loggerUtils';
+import { logger } from '../utils/logger';
+import { ApiError } from '../utils/errors';
 
 /**
- * @summary
  * Global error handling middleware
- * 
- * @function errorMiddleware
- * @param {Error} err - Error object
- * @param {Request} req - Express request object
- * @param {Response} res - Express response object
- * @param {NextFunction} next - Express next function
- * @returns {void}
  */
-export function errorMiddleware(err: any, req: Request, res: Response, next: NextFunction): void {
+export const errorMiddleware = (
+  err: Error,
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
   // Log the error
-  logger.error('Error occurred', {
+  logger.error('Error occurred:', {
     error: err.message,
     stack: err.stack,
     path: req.path,
-    method: req.method
+    method: req.method,
   });
 
-  // Determine status code
-  const statusCode = err.statusCode || 500;
-  
-  // Send error response
-  res.status(statusCode).json({
+  // Handle known API errors
+  if (err instanceof ApiError) {
+    res.status(err.statusCode).json({
+      success: false,
+      error: {
+        code: err.code,
+        message: err.message,
+      },
+      timestamp: new Date().toISOString(),
+    });
+    return;
+  }
+
+  // Handle validation errors
+  if (err.name === 'ValidationError' || err.name === 'ZodError') {
+    res.status(400).json({
+      success: false,
+      error: {
+        code: 'VALIDATION_ERROR',
+        message: 'Validation failed',
+        details: err.message,
+      },
+      timestamp: new Date().toISOString(),
+    });
+    return;
+  }
+
+  // Handle unknown errors
+  res.status(500).json({
     success: false,
     error: {
-      message: statusCode === 500 ? 'Internal server error' : err.message,
-      code: err.code || 'INTERNAL_ERROR'
+      code: 'INTERNAL_SERVER_ERROR',
+      message: 'An unexpected error occurred',
     },
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
-}
+};
