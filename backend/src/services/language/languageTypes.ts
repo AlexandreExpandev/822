@@ -1,24 +1,65 @@
-export namespace languageTypes {
-  export interface Language {
-    id: string;
-    name: string;
-    extension: string;
-  }
-
-  export const SUPPORTED_LANGUAGES: Language[] = [
-    { id: 'javascript', name: 'JavaScript', extension: 'js' },
-    { id: 'typescript', name: 'TypeScript', extension: 'ts' },
-    { id: 'python', name: 'Python', extension: 'py' },
-    { id: 'java', name: 'Java', extension: 'java' },
-    { id: 'csharp', name: 'C#', extension: 'cs' },
-    { id: 'cpp', name: 'C++', extension: 'cpp' },
-    { id: 'go', name: 'Go', extension: 'go' },
-    { id: 'ruby', name: 'Ruby', extension: 'rb' },
-    { id: 'php', name: 'PHP', extension: 'php' },
-    { id: 'swift', name: 'Swift', extension: 'swift' },
-    { id: 'kotlin', name: 'Kotlin', extension: 'kt' },
-    { id: 'rust', name: 'Rust', extension: 'rs' },
-    { id: 'html', name: 'HTML', extension: 'html' },
-    { id: 'bash', name: 'Bash', extension: 'sh' },
-  ];
-}
+/**
+ * Available programming languages for Hello World code generation
+ */
+export const languageTypes: LanguageInfo[] = [
+  {
+    id: 1,
+    name: 'JavaScript',
+    extension: 'js',
+    displayName: 'JavaScript',
+  },
+  {
+    id: 2,
+    name: 'Python',
+    extension: 'py',
+    displayName: 'Python',
+  },
+  {
+    id: 3,
+    name: 'Java',
+    extension: 'java',
+    displayName: 'Java',
+  },
+  {
+    id: 4,
+    name: 'CSharp',
+    extension: 'cs',
+    displayName: 'C#',
+  },
+  {
+    id: 5,
+    name: 'CPlusPlus',
+    extension: 'cpp',
+    displayName: 'C++',
+  },
+  {
+    id: 6,
+    name: 'PHP',
+    extension: 'php',
+    displayName: 'PHP',
+  },
+  {
+    id: 7,
+    name: 'Ruby',
+    extension: 'rb',
+    displayName: 'Ruby',
+  },
+  {
+    id: 8,
+    name: 'Go',
+    extension: 'go',
+    displayName: 'Go',
+  },
+  {
+    id: 9,
+    name: 'Swift',
+    extension: 'swift',
+    displayName: 'Swift',
+  },
+  {
+    id: 10,
+    name: 'TypeScript',
+    extension: 'ts',
+    displayName: 'TypeScript',
+  },
+];

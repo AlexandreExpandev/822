@@ -1,22 +1,21 @@
 import { Request, Response, NextFunction } from 'express';
-import { AnyZodObject, ZodError } from 'zod';
-import { BadRequestError } from './errorMiddleware';
+import { z } from 'zod';
 
-export const validateRequest = (
-  schema: AnyZodObject,
-  source: 'body' | 'query' | 'params' = 'body'
-) => {
-  return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    try {
-      const data = await schema.parseAsync(req[source]);
-      req[source] = data;
-      next();
-    } catch (error) {
-      if (error instanceof ZodError) {
-        next(new BadRequestError('Validation failed', error.format()));
-      } else {
-        next(error);
-      }
-    }
-  };
-};
+/**
+ * Request validation middleware
+ */
+export function validationMiddleware(req: Request, res: Response, next: NextFunction): void {
+  // Basic validation to ensure request body exists
+  if (!req.body || Object.keys(req.body).length === 0) {
+    return res.status(400).json({
+      success: false,
+      error: {
+        message: 'Request body is required',
+      },
+      timestamp: new Date().toISOString(),
+    });
+  }
+
+  // Continue to the next middleware
+  next();
+}

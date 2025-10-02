@@ -1,53 +1,47 @@
-import { codeTypes } from './codeTypes';
-import { languageService } from '../language';
-import { NotFoundError } from '../../middleware/errorMiddleware';
+import { languageGet } from '../language';
+import { codeTemplates } from './codeTemplates';
 
 /**
- * Service for generating Hello World code in different programming languages
+ * Generates Hello World code for the specified programming language
+ *
+ * @param languageId - Language identifier
+ * @returns Generated code object with language details
  */
-export const codeService = {
-  /**
-   * Generates Hello World code for a specific programming language
-   * @param languageId Language identifier
-   * @returns Code object with content and metadata
-   */
-  generateCode: async (languageId: string): Promise<codeTypes.CodeResponse> => {
-    const language = await languageService.getLanguageById(languageId);
-    if (!language) {
-      throw new NotFoundError(`Language '${languageId}' not supported`);
-    }
+export async function generateCode(languageId: number): Promise<GeneratedCode> {
+  const language = await languageGet(languageId);
 
-    const codeTemplate = codeTypes.CODE_TEMPLATES[languageId];
-    if (!codeTemplate) {
-      throw new NotFoundError(`No template available for language '${languageId}'`);
-    }
+  if (!language) {
+    throw new Error('Language not found');
+  }
 
-    return {
-      language: language.name,
-      content: codeTemplate,
-      extension: language.extension,
-    };
-  },
+  const template = codeTemplates[language.name];
 
-  /**
-   * Generates a downloadable file with Hello World code
-   * @param languageId Language identifier
-   * @returns File object with content and filename
-   */
-  generateCodeFile: async (languageId: string): Promise<codeTypes.CodeFile> => {
-    const language = await languageService.getLanguageById(languageId);
-    if (!language) {
-      throw new NotFoundError(`Language '${languageId}' not supported`);
-    }
+  if (!template) {
+    throw new Error(`Template not available for ${language.name}`);
+  }
 
-    const codeTemplate = codeTypes.CODE_TEMPLATES[languageId];
-    if (!codeTemplate) {
-      throw new NotFoundError(`No template available for language '${languageId}'`);
-    }
+  return {
+    languageId: language.id,
+    languageName: language.displayName,
+    code: template,
+    extension: language.extension,
+  };
+}
 
-    return {
-      content: codeTemplate,
-      filename: `hello_world.${language.extension}`,
-    };
-  },
-};
+/**
+ * Prepares code for download with appropriate filename
+ *
+ * @param languageId - Language identifier
+ * @returns Code content and filename
+ */
+export async function getCodeForDownload(
+  languageId: number
+): Promise<{ code: string; fileName: string }> {
+  const generatedCode = await generateCode(languageId);
+  const fileName = `HelloWorld.${generatedCode.extension}`;
+
+  return {
+    code: generatedCode.code,
+    fileName,
+  };
+}

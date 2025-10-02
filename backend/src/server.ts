@@ -1,32 +1,27 @@
-import express from 'express';
+import express, { Application } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import { config } from './config';
-import { logger } from './utils/logger';
 import { errorMiddleware } from './middleware/errorMiddleware';
 import { notFoundMiddleware } from './middleware/notFoundMiddleware';
 import routes from './routes';
+import { logger } from './utils/logger';
 
-const app = express();
+const app: Application = express();
 
 // Security middleware
 app.use(helmet());
-app.use(
-  cors({
-    origin: config.cors.origin,
-    credentials: true,
-  })
-);
+app.use(cors(config.cors));
 
 // Request processing middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Logging middleware
-app.use(morgan('combined', { stream: { write: (message) => logger.info(message.trim()) } }));
+// Logging
+app.use(morgan('combined'));
 
-// Health check endpoint
+// Health check
 app.get('/health', (req, res) => {
   res.json({ status: 'healthy', timestamp: new Date().toISOString() });
 });
@@ -34,22 +29,24 @@ app.get('/health', (req, res) => {
 // API Routes
 app.use('/api', routes);
 
-// Error handling middleware
+// 404 handler
 app.use(notFoundMiddleware);
-app.use(errorMiddleware);
 
-// Start server
-const server = app.listen(config.server.port, () => {
-  logger.info(`Server running on port ${config.server.port} in ${config.server.environment} mode`);
-});
+// Error handling
+app.use(errorMiddleware);
 
 // Graceful shutdown
 process.on('SIGTERM', () => {
-  logger.info('SIGTERM received, shutting down gracefully');
+  logger.info('SIGTERM received, closing server gracefully');
   server.close(() => {
     logger.info('Server closed');
     process.exit(0);
   });
+});
+
+// Server startup
+const server = app.listen(config.port, () => {
+  logger.info(`Server running on port ${config.port} in ${config.nodeEnv} mode`);
 });
 
 export default server;

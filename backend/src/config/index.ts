@@ -4,12 +4,11 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export const config = {
-  server: {
-    port: parseInt(process.env.PORT || '3000', 10),
-    environment: process.env.NODE_ENV || 'development',
-  },
+  nodeEnv: process.env.NODE_ENV || 'development',
+  port: parseInt(process.env.PORT || '3000'),
   cors: {
-    origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+    origin: process.env.CORS_ORIGIN || '*',
+    credentials: true,
   },
   logging: {
     level: process.env.LOG_LEVEL || 'info',

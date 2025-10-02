@@ -1,43 +1,33 @@
-export interface SuccessResponse<T> {
-  success: true;
-  data: T;
-  metadata?: {
-    timestamp: string;
-  };
-}
-
-export interface ErrorResponse {
-  success: false;
-  error: {
-    message: string;
-    details?: unknown;
-    stack?: string;
-  };
-  timestamp: string;
-}
-
-export const successResponse = <T>(data: T): SuccessResponse<T> => {
+/**
+ * Formats a successful response
+ *
+ * @param data - Response data
+ * @returns Formatted success response
+ */
+export function successResponse<T>(data: T): SuccessResponse<T> {
   return {
     success: true,
     data,
-    metadata: {
-      timestamp: new Date().toISOString(),
-    },
+    timestamp: new Date().toISOString(),
   };
-};
+}
 
-export const errorResponse = (
-  message: string,
-  details?: unknown,
-  stack?: string
-): ErrorResponse => {
+/**
+ * Formats an error response
+ *
+ * @param message - Error message
+ * @param code - Error code (optional)
+ * @param details - Additional error details (optional)
+ * @returns Formatted error response
+ */
+export function errorResponse(message: string, code?: string, details?: any): ErrorResponse {
   return {
     success: false,
     error: {
       message,
+      ...(code && { code }),
       ...(details && { details }),
-      ...(process.env.NODE_ENV === 'development' && stack && { stack }),
     },
     timestamp: new Date().toISOString(),
   };
-};
+}

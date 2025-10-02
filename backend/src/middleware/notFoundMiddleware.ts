@@ -1,6 +1,14 @@
-import { Request, Response, NextFunction } from 'express';
-import { NotFoundError } from './errorMiddleware';
+import { Request, Response } from 'express';
 
-export const notFoundMiddleware = (req: Request, res: Response, next: NextFunction): void => {
-  next(new NotFoundError(`Route not found: ${req.method} ${req.originalUrl}`));
-};
+/**
+ * 404 Not Found middleware
+ */
+export function notFoundMiddleware(req: Request, res: Response): void {
+  res.status(404).json({
+    success: false,
+    error: {
+      message: `Route not found: ${req.method} ${req.originalUrl}`,
+    },
+    timestamp: new Date().toISOString(),
+  });
+}
