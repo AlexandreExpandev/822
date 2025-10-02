@@ -51,13 +51,15 @@ export async function getHandler(req: Request, res: Response, next: NextFunction
     const params = paramsSchema.safeParse(req.params);
 
     if (!params.success) {
-      return res.status(400).json(errorResponse('Invalid language ID'));
+      res.status(400).json(errorResponse('Invalid language ID'));
+      return;
     }
 
     const language = await languageGet(params.data.id);
 
     if (!language) {
-      return res.status(404).json(errorResponse('Language not found'));
+      res.status(404).json(errorResponse('Language not found'));
+      return;
     }
 
     res.json(successResponse(language));

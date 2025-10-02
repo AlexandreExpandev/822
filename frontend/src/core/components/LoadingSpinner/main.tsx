@@ -13,6 +13,7 @@ export const LoadingSpinner = ({ size = 'md', className = '' }: LoadingSpinnerPr
     md: 'h-8 w-8',
     lg: 'h-12 w-12',
     xl: 'h-16 w-16',
+    large: 'h-16 w-16',
   }[size];
 
   return (

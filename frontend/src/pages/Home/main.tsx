@@ -14,7 +14,7 @@ import type { Language } from '@/domain/language/types';
  * @category code-generation
  */
 export const HomePage = () => {
-  const [selectedLanguage, setSelectedLanguage] = useState<Language | null>(null);
+  const [, setSelectedLanguage] = useState<Language | null>(null);
 
   const { generatedCode, isGenerating, isDownloading, generateCode, downloadCode } =
     useCodeGenerator();

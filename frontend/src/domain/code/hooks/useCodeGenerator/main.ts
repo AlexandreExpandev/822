@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
 import { codeService } from '../../services/codeService';
 import { downloadFile } from '@/core/lib/api';
 import type { UseCodeGeneratorOptions, UseCodeGeneratorReturn } from './types';
+import type { GeneratedCode } from '../../types';
 
 /**
  * @hook useCodeGenerator
@@ -29,16 +30,26 @@ export const useCodeGenerator = (options: UseCodeGeneratorOptions = {}): UseCode
       return codeService.generateCode({ languageId: selectedLanguageId });
     },
     enabled: !!selectedLanguageId,
-    onSuccess: options.onCodeGenerated,
-    onError: (error) => {
-      toast.error('Failed to generate code');
-      options.onError?.(error);
-    },
   });
+
+  // Handle success callback separately with useEffect
+  useEffect(() => {
+    if (generatedCode && options.onCodeGenerated) {
+      options.onCodeGenerated(generatedCode as GeneratedCode);
+    }
+  }, [generatedCode, options.onCodeGenerated]);
+
+  // Handle error callback separately
+  useEffect(() => {
+    if (generateError) {
+      toast.error('Failed to generate code');
+      options.onError?.(generateError);
+    }
+  }, [generateError, options.onError]);
 
   // Mutation for downloading code
   const { mutate: downloadCode, isPending: isDownloading } = useMutation({
-    mutationFn: (languageId: number) => {
+    mutationFn: async (languageId: number) => {
       const downloadUrl = codeService.getDownloadUrl(languageId);
       downloadFile(downloadUrl);
       return Promise.resolve();
@@ -47,7 +58,7 @@ export const useCodeGenerator = (options: UseCodeGeneratorOptions = {}): UseCode
       toast.success('Code downloaded successfully');
       options.onCodeDownloaded?.();
     },
-    onError: (error) => {
+    onError: (error: unknown) => {
       toast.error('Failed to download code');
       options.onError?.(error);
     },
@@ -66,7 +77,7 @@ export const useCodeGenerator = (options: UseCodeGeneratorOptions = {}): UseCode
   };
 
   return {
-    generatedCode,
+    generatedCode: generatedCode as GeneratedCode | undefined,
     isGenerating,
     isDownloading,
     generateError,

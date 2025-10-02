@@ -1,6 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
+import { useEffect } from 'react';
 import { languageService } from '../../services/languageService';
 import type { UseLanguagesOptions, UseLanguagesReturn } from './types';
+import type { Language } from '../../types';
 
 /**
  * @hook useLanguages
@@ -19,9 +21,21 @@ export const useLanguages = (options: UseLanguagesOptions = {}): UseLanguagesRet
     queryKey: ['languages'],
     queryFn: () => languageService.getLanguages(),
     staleTime: 5 * 60 * 1000, // 5 minutes
-    onSuccess: options.onSuccess,
-    onError: options.onError,
   });
+
+  // Handle success callback with useEffect
+  useEffect(() => {
+    if (languages && options.onSuccess) {
+      options.onSuccess(languages as Language[]);
+    }
+  }, [languages, options.onSuccess]);
+
+  // Handle error callback with useEffect
+  useEffect(() => {
+    if (error && options.onError) {
+      options.onError(error);
+    }
+  }, [error, options.onError]);
 
   // Query for fetching a specific language
   const getLanguage = (id: number) => {
@@ -34,7 +48,7 @@ export const useLanguages = (options: UseLanguagesOptions = {}): UseLanguagesRet
   };
 
   return {
-    languages: languages || [],
+    languages: (languages as Language[]) || [],
     isLoading,
     error,
     refetch,

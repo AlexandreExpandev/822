@@ -36,13 +36,15 @@ export async function generateHandler(
     const body = bodySchema.safeParse(req.body);
 
     if (!body.success) {
-      return res.status(400).json(errorResponse('Invalid request parameters'));
+      res.status(400).json(errorResponse('Invalid request parameters'));
+      return;
     }
 
     const language = await languageGet(body.data.languageId);
 
     if (!language) {
-      return res.status(404).json(errorResponse('Language not found'));
+      res.status(404).json(errorResponse('Language not found'));
+      return;
     }
 
     const generatedCode = await generateCode(body.data.languageId);
@@ -79,13 +81,15 @@ export async function downloadHandler(
     const params = paramsSchema.safeParse(req.params);
 
     if (!params.success) {
-      return res.status(400).json(errorResponse('Invalid language ID'));
+      res.status(400).json(errorResponse('Invalid language ID'));
+      return;
     }
 
     const language = await languageGet(params.data.languageId);
 
     if (!language) {
-      return res.status(404).json(errorResponse('Language not found'));
+      res.status(404).json(errorResponse('Language not found'));
+      return;
     }
 
     const { code, fileName } = await getCodeForDownload(params.data.languageId);
